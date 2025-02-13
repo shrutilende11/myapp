@@ -399,5 +399,64 @@ sudo systemctl status grafana-server
 ```
 
 **Access Grafana Web Interface:**
+```
+http://<your-server-ip>:3000
+```
+## **Kubernetes-MiniKube:**
 
-`http://<your-server-ip>:3000`
+Deploying Containers in Minikube
+
+1. Use Minikube’s Docker Daemon Since Minikube has its own Docker daemon, set it up:
+
+```
+eval $(minikube docker-env)
+```
+Verify that Minikube’s Docker daemon is active:
+```
+docker ps
+``` 
+
+2. Tag and Push Your Images to Minikube
+
+Since your images (`application_service1` and `application_service2`) are built locally, rebuild them inside Minikube:
+```
+docker tag application_service1 my-flask-app:latest
+docker tag application_service2 my-mysql-db:latest
+```
+List images to confirm:
+```
+docker images | grep my
+```
+3. Create Kubernetes YAML Files for Deployment
+Kubernetes needs Deployment and Service YAML files.
+
+4. Deploy to Minikube
+
+Apply the deployments and services:
+```
+kubectl apply -f mysql-deployment.yaml
+kubectl apply -f mysql-service.yaml
+kubectl apply -f flask-app-deployment.yaml
+kubectl apply -f flask-app-service.yaml
+``` 
+Check the pods:
+```
+kubectl get pods 
+```
+Check services:
+```
+kubectl get services
+```
+5. Access Flask App
+Get the URL for the Flask app:
+```
+minikube service flask-service --url
+```
+It should return a URL like:
+```
+http://192.168.49.2:32456
+```
+Now test it:
+```
+curl http://192.168.49.2:32456
+```
